@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{data.op}}</h1>
+<div class="dialog" mat-dialog-content>
+    <ng-container *ngFor="let column of data.columnDefinition" [ngSwitch]="column.type">
+        <ng-container *ngIf="data.element[column.key] || data.element[column.key] == null && !column.hide">
+            <div *ngSwitchCase="'dropdown'">
+                <app-table [data]="data.element[column.key]" [columns]="data.expandedColumns ? data.expandedColumns : data.columnDefinition" [subColumns]="data.subColumnDefinition"></app-table>
+            </div>
+            <div style="width:100%" *ngSwitchDefault>
+                <mat-form-field>
+                  <mat-label>{{column.name}}</mat-label>
+                  <input [disabled]="data.op == 'Delete'" matInput [(ngModel)]="data.element[column.key]">
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [mat-dialog-close]="data.element" cdkFocusInitial>{{data.op}}</button>
+    <button mat-raised-button color="warn" (click)="onNoClick()">Close</button>
+</div>

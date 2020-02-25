@@ -1,0 +1,9 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+    <h1>
+      Welcome to {{ title }}!
+    </h1>
+</div>
+<ng-container *ngIf="properties">
+    <app-table [data]="properties" [columns]="columnList" [expandedColumns]="expandedColumns"></app-table>
+</ng-container>
