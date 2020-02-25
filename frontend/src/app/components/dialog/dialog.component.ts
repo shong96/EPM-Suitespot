@@ -40,7 +40,7 @@ export class DialogComponent implements OnInit{
     if (value && value.length > 0) {
       this.data.element[column.key] = value;
     } else {
-      this.data.element[column.key] = "";
+      this.data.element[column.key] = undefined;
     }
   }
 }
