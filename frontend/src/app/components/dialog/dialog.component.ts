@@ -35,5 +35,12 @@ export class DialogComponent implements OnInit{
       duration: 2000,
     });
   };
-
+  
+  updateElement(value: string, column: any) {
+    if (value && value.length > 0) {
+      this.data.element[column.key] = $event;
+    } else {
+      this.data.element[column.key] = "";
+    }
+  }
 }
