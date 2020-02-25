@@ -49,5 +49,5 @@
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="table-detail-row"></tr>
       </table>
     
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>

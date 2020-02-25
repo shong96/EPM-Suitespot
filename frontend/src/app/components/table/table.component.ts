@@ -33,7 +33,8 @@ export class TableComponent implements OnInit {
   columnToExpand: string;
   objectTemplate: any;
 
-  readonly dialogWidth: string = '600px';
+  readonly dialogWidth: string = '700px';
+  readonly pageSize: number = 10;
   readonly actionColumn = ACTION_COLUMN;
 
   constructor(public dialog: MatDialog,
@@ -94,18 +95,12 @@ export class TableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // console.log(this.dataSource.data);
-        // console.log(result);
         const index = this.data.findIndex(row => result._id == row._id);
-        console.log(this.data);
-        console.log(index);
-        console.log(result);
         this.data.splice(index, 1, result);
-        console.log(this.data);
         this.dataSource.data = this.data;
         if(this.instanceOfProperty(result)) {
-          this.propertyService.updateProperty(result._id, result).subscribe(result => {
-          })
+          this.propertyService.updateProperty(result._id, result).subscribe(res => {
+          });
         }
       }
     });

@@ -13,7 +13,6 @@ controller.post('/', async (req, res) => {
 });
 
 controller.get('/', async (req, res) => {
-  const query = req.body;
   const properties = await propertyService.listProperties();
   res.send(properties);
 });
