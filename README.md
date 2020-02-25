@@ -8,15 +8,25 @@ The following is a list of dependencies and their versions that must be installe
 
 * node@8.9.4 [nvm](https://github.com/creationix/nvm) is a great tool to manage multiple installations of node
 * npm@5.6.0
-* ng@1.7.4 [Angular CLI](https://cli.angular.io/)
+* ng@8.1.3[Angular CLI](https://cli.angular.io/)
 
 ## Server
 
-Checkout the [server/README.md](https://github.com/suitespot/EasyPropertyManagement/blob/master/server/README.md) for more information about running the API server.
+Before starting the server be sure the dependencies are installed by running `npm install`.
+
+Start the development server with hot reload can be started with:
+
+`npm run dev:server`
+
+Server started at `http://localhost:3000/`.
 
 ## Frontned
 
-Checkout the [frontend/README.md](https://github.com/suitespot/EasyPropertyManagement/blob/master/frontend/README.md) for more information about running the Angular frontend.
+REQUIRES ANGULAR 8.1.3
+
+First install the dependencies with `npm install`.
+
+Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## LICENSE
 
