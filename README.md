@@ -20,7 +20,7 @@ Start the development server with hot reload can be started with:
 
 Server started at `http://localhost:3000/`.
 
-## Frontned
+## Frontend
 
 REQUIRES ANGULAR 8.1.3
 
