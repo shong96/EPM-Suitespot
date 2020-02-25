@@ -38,7 +38,7 @@ export class DialogComponent implements OnInit{
   
   updateElement(value: string, column: any) {
     if (value && value.length > 0) {
-      this.data.element[column.key] = $event;
+      this.data.element[column.key] = value;
     } else {
       this.data.element[column.key] = "";
     }
