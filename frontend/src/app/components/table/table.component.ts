@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, remove } from 'lodash';
 import { DialogComponent } from '../dialog/dialog.component';
 import { TableColumnDefinition, ACTION_COLUMN } from '../../interface/property-table';
 import { PropertyBindingType } from '@angular/compiler';
@@ -124,16 +124,14 @@ export class TableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result);
         if(this.instanceOfProperty(result)) {
           this.propertyService.deleteProperty(result._id).subscribe(response => {
-            this.data.filter((row) => row._id !== result._id);
+            remove(this.data, (row) => row._id == result._id);
             this.dataSource.data = this.data;
           });
         } else {
-          this.data = this.data.filter((row) => !this.compareUnits(row, result));
+          remove(this.data, (row) => this.compareUnits(row, result));
           this.dataSource.data = this.data;
-          console.log(this.dataSource.data);
         }
       }
     });

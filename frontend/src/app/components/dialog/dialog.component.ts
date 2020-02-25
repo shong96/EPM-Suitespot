@@ -11,14 +11,16 @@ import { cloneDeep } from 'lodash';
 export class DialogComponent implements OnInit{
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public oldData: any,
     private _snackBar: MatSnackBar) {
-    console.log(data);
+    // console.log(data);
   }
 
+  data;
+
   ngOnInit(): void {
+    this.data = cloneDeep(this.oldData);
     this.checkColumns();
-    // this.data = cloneDeep(this.data);
   }
 
   checkColumns(): void {
@@ -33,6 +35,8 @@ export class DialogComponent implements OnInit{
 
   onSubmit() {
     console.log(this.data.element);
+    console.log(this.oldData);
+    // this.oldData = 
     this._snackBar.open("Property saved", "close", {
       duration: 2000,
     });

@@ -8,7 +8,7 @@
             <div style="width:100%" *ngSwitchDefault>
                 <mat-form-field>
                   <mat-label>{{column.name}}</mat-label>
-                  <input [disabled]="data.op == 'Delete'" matInput [(ngModel)]="data.element[column.key]">
+                  <input required [disabled]="data.op == 'Delete'" matInput [(ngModel)]="data.element[column.key]">
                 </mat-form-field>
             </div>
         </ng-container>
