@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material';
 import { cloneDeep } from 'lodash';
+import { ACTION_COLUMN } from 'src/app/interface/property-table';
 
 @Component({
   selector: 'app-dialog',
@@ -21,8 +22,12 @@ export class DialogComponent implements OnInit{
   }
 
   checkColumns(): void {
+    const actionColumn = {key: ACTION_COLUMN, hide: true};
     if (this.data.subColumnDefinition ) {
+      this.data.subColumnDefinition.push(actionColumn);
       this.data.expandedColumns = this.data.subColumnDefinition;
+    } else if (this.data.expandedColumns){
+      this.data.expandedColumns.push(actionColumn);
     }
   }
 

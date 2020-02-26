@@ -19,8 +19,8 @@ export class PropertyComponent implements OnInit {
     { name: 'Number', key: 'number'},
     { name: 'Floor', key: 'floor'},
     { name: 'Rent', key: 'rent'},
-    { name: 'Vacant', key: 'vacant'},
-    { key: ACTION_COLUMN, hide: true},
+    { name: 'Vacant', key: 'vacant'}
+    // { key: ACTION_COLUMN, hide: true},
   ];
 
   title = 'Easy Property Management';
