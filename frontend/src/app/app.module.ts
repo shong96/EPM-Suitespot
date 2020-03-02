@@ -15,8 +15,9 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
-import { MatIconModule, MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatSelectModule, MatSelect} from '@angular/material/select';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableComponent } from './components/table/table.component';
@@ -50,6 +51,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatSelectModule,
     AppRoutingModule,
     BrowserModule,
     ApiClientModule.forRoot()

@@ -7,8 +7,8 @@ export class PropertyService {
     private dao = new PropertyDAO()
   ) { }
 
-  public listProperties(): Promise<Property[]> {
-    return this.dao.query();
+  public listProperties(query?: any, offset?: number, limit?: number): Promise<Property[]> {
+    return this.dao.query({}, offset, limit);
   }
 
   public createProperty(property: Property): Promise<string> {

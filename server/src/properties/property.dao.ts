@@ -13,8 +13,9 @@ export class PropertyDAO {
   }
 
   public async query(query?: any, offset?: number, limit?: number): Promise<Property[]> {
-    const properties = await this.propertyCollection().find()
+    const properties = await this.propertyCollection().find(query);
     return properties;
+    // return properties.slice(offset, offset + limit);
   }
 
   public async getProperty(id: string): Promise<Property> {

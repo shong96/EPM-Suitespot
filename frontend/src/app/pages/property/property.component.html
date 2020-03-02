@@ -4,6 +4,4 @@
       Welcome to {{ title }}!
     </h1>
 </div>
-<ng-container *ngIf="properties">
-    <app-table [data]="properties" [columns]="columnList" [expandedColumns]="expandedColumns"></app-table>
-</ng-container>
+<app-table [title]="'Properties'" [api]="api" [columns]="columnList" [expandedColumns]="expandedColumns"></app-table>

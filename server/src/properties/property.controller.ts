@@ -7,13 +7,13 @@ const propertyService = new PropertyService();
 const controller = express.Router();
 
 controller.post('/', async (req, res) => {
-  const property = req.body;
+  const property = req.body.data;
   const id = await propertyService.createProperty(property);
   res.send(JSON.stringify(id));
 });
 
 controller.get('/', async (req, res) => {
-  const properties = await propertyService.listProperties();
+  const properties = await propertyService.listProperties({}, req.query.offset, req.query.limit);
   res.send(properties);
 });
 
@@ -24,7 +24,7 @@ controller.get('/:id', async (req, res) => {
 })
 
 controller.patch('/:id', async (req, res) => {
-  const property = req.body;
+  const property = req.body.data;
   const id = await propertyService.updateProperty(property);
   res.send(JSON.stringify(id));
 });

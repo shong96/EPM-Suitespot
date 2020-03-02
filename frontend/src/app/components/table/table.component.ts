@@ -1,11 +1,14 @@
-import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatSort, MatPaginator, MatDialog, PageEvent, Sort, MatSnackBar } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { get, isEmpty, remove } from 'lodash';
+import { get, remove } from 'lodash';
 import { DialogComponent } from '../dialog/dialog.component';
 import { TableColumnDefinition, ACTION_COLUMN } from '../../interface/property-table';
-import { PropertyBindingType } from '@angular/compiler';
 import { Property, Unit, PropertyService } from 'src/app/api/client/properties/property.service';
+import { DescriptionType, RequestDescription } from 'src/app/interface/backend-request-type';
+import { BackendConnectService } from 'src/app/api/client/backend-connect.service';
+import { HttpParams } from '@angular/common/http';
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -20,6 +23,8 @@ import { Property, Unit, PropertyService } from 'src/app/api/client/properties/p
 })
 export class TableComponent implements OnInit {
 
+  @Input() public title: string;
+  @Input() public api: string;
   @Input() public data: any[];
   @Input() public columns: TableColumnDefinition[];
   @Input() public expandedColumns: TableColumnDefinition[];
@@ -28,26 +33,53 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  dataSource: any;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnsToDisplay: string[];
   columnToExpand: string;
   objectTemplate: any;
+  pageEvent: PageEvent;
+  params = new HttpParams();
+  pageSize: number = 10;
 
   readonly dialogWidth: string = '700px';
-  readonly pageSize: number = 10;
   readonly actionColumn = ACTION_COLUMN;
 
   constructor(public dialog: MatDialog,
-              public propertyService: PropertyService) {}
-
+              public propertyService: PropertyService,
+              public dataService: BackendConnectService,
+              private _snackBar: MatSnackBar) {}
 
   ngOnInit() {
-    this.columnsToDisplay = this.columns.filter((column) => !column.expand).map((column) => column.key);
-    this.columnToExpand  = get(this.columns.find((column) => column.expand), 'key', '');
-    this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    if (!this.data) {
+      // this.dataSource.sort.sortChange.subscribe((sort: Sort) => {
+      //   this.sortData(sort);
+      // });
+      // this.dataSource.paginator.page.subscribe((page: PageEvent) => {
+      //   this.pageData(page);
+      // });
+      // this.params = this.params.set('offset', '0').set('limit', this.pageSize.toString());
+      const description: DescriptionType = {params: this.params};
+      this.dataService.get(this.getRequestDescription(description)).subscribe(results => {
+        this.data = results;
+        this.dataSource.data = this.data;
+      });
+    } else {
+      this.dataSource.data = this.data;
+    }
+    this.columnsToDisplay = this.columns.filter((column) => !column.expand).map((column) => column.key);
+    this.columnToExpand  = get(this.columns.find((column) => column.expand), 'key', '');
     this.setObjectTemplate();
+  }
+
+  sortData($event: Sort) {
+  }
+  
+  pageData($event: PageEvent) {
+    this.pageSize = $event.pageSize;
+    // const offset = ($event.pageIndex * this.pageSize).toString();
+    // this.params = this.params.set('offset', offset).set('limit', this.pageSize.toString());
   }
 
   applyFilter(event: Event) {
@@ -78,8 +110,11 @@ export class TableComponent implements OnInit {
         this.data.push(result);
         this.dataSource.data = this.data;
         if(this.instanceOfProperty(result)) {
-          this.propertyService.createProperty(result).subscribe(result => {
-          })
+          const description: DescriptionType = {data: result};
+          const requestDescription: RequestDescription = this.getRequestDescription(description);
+          this.dataService.create(requestDescription).subscribe(result => {
+            this.sendNotification('Created');
+          });
         }
       }
     });
@@ -95,13 +130,17 @@ export class TableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const index = this.data.findIndex(row => result._id == row._id);
-        this.data.splice(index, 1, result);
-        this.dataSource.data = this.data;
         if(this.instanceOfProperty(result)) {
-          this.propertyService.updateProperty(result._id, result).subscribe(res => {
+          // index = this.data.findIndex(row => result._id == row._id);
+          const description: DescriptionType = {data: result};
+          const requestDescription: RequestDescription = this.getRequestDescription(description);
+          this.dataService.update(requestDescription).subscribe(res => {
+            this.sendNotification('Updated');
           });
         }
+        const index = this.dataSource.filteredData.indexOf(element);
+        this.data.splice(index, 1, result);
+        this.dataSource.data = this.data;
       }
     });
   }
@@ -120,27 +159,37 @@ export class TableComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if(this.instanceOfProperty(result)) {
-          this.propertyService.deleteProperty(result._id).subscribe(response => {
-            remove(this.data, (row) => row._id == result._id);
-            this.dataSource.data = this.data;
+          const description: DescriptionType = {data: result};
+          const requestDescription: RequestDescription = this.getRequestDescription(description);
+          this.dataService.delete(requestDescription).subscribe(response => {
+            this.sendNotification('Deleted');
           });
-        } else {
-          remove(this.data, (row) => this.compareUnits(row, result));
-          this.dataSource.data = this.data;
         }
+        const index = this.dataSource.filteredData.indexOf(element);
+        this.data.splice(index, 1);
+        this.dataSource.data = this.data;
       }
     });
+  }
+  
+  private sendNotification(action: string): void {
+    this._snackBar.open(action + '!', "close", {
+      duration: 2000,
+    });
+  }
+
+  private getRequestDescription(description: DescriptionType): RequestDescription {
+    const id: string = description.data ? description.data._id : undefined;
+    const params: HttpParams = description.params ? description.params : undefined;
+    return {
+      id: id,
+      endpoint: this.api,
+      bodyDescription: description,
+      params: params
+    };
   }
 
   private instanceOfProperty(object: any): object is Property {
     return 'name' in object;
-  }
-
-  private compareUnits(u1: Unit, u2: Unit) {
-    let bool: boolean = true;
-    Object.keys(u1).forEach((key) => {
-      if (u1[key]!==u2[key]) bool = false;
-    });
-    return bool;
   }
 }
