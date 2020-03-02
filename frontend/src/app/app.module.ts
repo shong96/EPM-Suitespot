@@ -21,7 +21,6 @@ import {MatSelectModule, MatSelect} from '@angular/material/select';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableComponent } from './components/table/table.component';
-import { FormComponent } from './pages/form/form.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 
 
@@ -31,7 +30,6 @@ import { DialogComponent } from './components/dialog/dialog.component';
     NavComponent,
     PropertyComponent,
     TableComponent,
-    FormComponent,
     DialogComponent
   ],
   entryComponents: [
