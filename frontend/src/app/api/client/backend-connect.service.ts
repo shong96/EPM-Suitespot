@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { RequestDescription, DescriptionType } from 'src/app/interface/backend-request-type';
+import { RequestDescription } from 'src/app/interface/backend-request-type';
 import { Observable } from 'rxjs';
 
 

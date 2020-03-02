@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog, PageEvent, Sort, MatSnackBar } from '@angular/material';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { get, remove } from 'lodash';
+import { get } from 'lodash';
 import { DialogComponent } from '../dialog/dialog.component';
 import { TableColumnDefinition, ACTION_COLUMN } from '../../interface/property-table';
-import { Property, Unit, PropertyService } from 'src/app/api/client/properties/property.service';
+import { Property, Unit } from 'src/app/api/client/properties/property.service';
 import { DescriptionType, RequestDescription } from 'src/app/interface/backend-request-type';
 import { BackendConnectService } from 'src/app/api/client/backend-connect.service';
 import { HttpParams } from '@angular/common/http';
@@ -45,7 +45,6 @@ export class TableComponent implements OnInit {
   readonly actionColumn = ACTION_COLUMN;
 
   constructor(public dialog: MatDialog,
-              public propertyService: PropertyService,
               public dataService: BackendConnectService,
               private _snackBar: MatSnackBar) {}
 
@@ -113,7 +112,7 @@ export class TableComponent implements OnInit {
           const description: DescriptionType = {data: result};
           const requestDescription: RequestDescription = this.getRequestDescription(description);
           this.dataService.create(requestDescription).subscribe(result => {
-            this.sendNotification('Created');
+            this.openNotification('Created');
           });
         }
       }
@@ -131,11 +130,10 @@ export class TableComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if(this.instanceOfProperty(result)) {
-          // index = this.data.findIndex(row => result._id == row._id);
           const description: DescriptionType = {data: result};
           const requestDescription: RequestDescription = this.getRequestDescription(description);
           this.dataService.update(requestDescription).subscribe(res => {
-            this.sendNotification('Updated');
+            this.openNotification('Updated');
           });
         }
         const index = this.dataSource.filteredData.indexOf(element);
@@ -162,7 +160,7 @@ export class TableComponent implements OnInit {
           const description: DescriptionType = {data: result};
           const requestDescription: RequestDescription = this.getRequestDescription(description);
           this.dataService.delete(requestDescription).subscribe(response => {
-            this.sendNotification('Deleted');
+            this.openNotification('Deleted');
           });
         }
         const index = this.dataSource.filteredData.indexOf(element);
@@ -172,7 +170,7 @@ export class TableComponent implements OnInit {
     });
   }
   
-  private sendNotification(action: string): void {
+  private openNotification(action: string): void {
     this._snackBar.open(action + '!', "close", {
       duration: 2000,
     });
